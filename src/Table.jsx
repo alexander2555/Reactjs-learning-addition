@@ -4,6 +4,8 @@ import { Row } from './Row'
 import './Table.css'
 
 function Table() {
+  const { users } = data
+
   /** Общий метод обработки нажатия Удалить */
   const onDelete = user => console.log(user)
 
@@ -13,13 +15,15 @@ function Table() {
       <table>
         <thead>
           <tr>
-            <td>Имя</td>
-            <td>Возраст</td>
-            <td>Удалить</td>
+            <th>Имя</th>
+            <th>Возраст</th>
+            <th>Качества</th>
+            <th>Профессия</th>
+            <th>Удалить</th>
           </tr>
         </thead>
         <tbody>
-          {data.map(user => (
+          {users.map(user => (
             /** Рендер строки - user: данные, onDelete: обработчик нажатия Удалить */
             <Row key={user._id} user={user} onDelete={onDelete} />
           ))}
