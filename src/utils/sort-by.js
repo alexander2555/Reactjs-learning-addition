@@ -15,7 +15,7 @@ export function sortBy(model, sortCol) {
   if (!sortCol || !this.length) return this
 
   const sortEl = el => {
-    const sortFieldCallback = model[sortCol].sort
+    const sortFieldCallback = model[sortCol]?.sort
 
     if (sortFieldCallback && typeof sortFieldCallback === 'function') {
       return sortFieldCallback(el)
