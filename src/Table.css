@@ -19,6 +19,16 @@
   border-radius: 50em;
   color: white;
   background-color: transparent;
+  font-size: smaller;
+}
+
+.sort-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+.sort-link:hover {
+  text-decoration: underline;
 }
 
 .logo {
