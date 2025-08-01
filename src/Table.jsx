@@ -50,8 +50,10 @@ export const Table = () => {
 
   const onSort = e => {
     e.preventDefault()
-    setSortCol(e.target.getAttribute('href') || '')
-    setSortDir(-sortDir)
+    const colName = e.target.getAttribute('href') || ''
+    setSortCol(colName)
+    if (colName === sortCol) setSortDir(-sortDir)
+    else setSortDir(1)
   }
 
   const renderColumn = (item, col) => {
