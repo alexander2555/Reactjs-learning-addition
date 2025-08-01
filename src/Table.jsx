@@ -3,37 +3,59 @@ import { useState } from 'react'
 import { Button, Label, SortLink } from './components'
 import { sortBy } from './utils'
 
-import { data } from './data' // используем начальные данные
-import { cols as colsModel } from './model'
+import { data } from './data' // начальные данные
 
 import './Table.css'
 
-Array.prototype.sortBy = sortBy
+// колонки для рендеринга
+const cols = {
+  name: {
+    title: 'Имя',
+    sort: true,
+  },
+  age: {
+    title: 'Возраст',
+    sort: true,
+  },
+  qualities: {
+    title: 'Качества',
+    component: item => (
+      <>
+        {item.qualities.map(q => (
+          <Label key={q._id} text={q.name} color={q.color} className='quality' />
+        ))}
+      </>
+    ),
+  },
+  profession: {
+    title: 'Профессия',
+    component: item => <span>{item.profession.name}</span>,
+    sort: item => item.profession.name,
+  },
+  delete: {
+    title: 'Удалить',
+    component: item => <Button onClick={() => console.log(item)}>Удалить</Button>,
+  },
+}
+
+// получаем пользователей из начальных данных
+const { users } = data
+
+// добавляем метод для сортировки по колонке к массиву пользователей
+users.sortBy = sortBy
 
 export const Table = () => {
-  const { users } = data // получаем пользователей из начальных данных
-
-  const [sort, setSort] = useState('')
-
-  // компоненты для рендеринга колонок
-  colsModel.qualities.component = item => (
-    <>
-      {item.qualities.map(q => (
-        <Label key={q._id} text={q.name} color={q.color} className='quality' />
-      ))}
-    </>
-  )
-  colsModel.delete.component = item => (
-    <Button onClick={() => console.log(item)}>Удалить</Button>
-  )
+  const [sortCol, setSortCol] = useState('')
+  const [sortDir, setSortDir] = useState(1)
 
   const onSort = e => {
     e.preventDefault()
-    setSort(e.target.getAttribute('href') || '')
+    setSortCol(e.target.getAttribute('href') || '')
+    setSortDir(-sortDir)
   }
 
   const renderColumn = (item, col) => {
-    const component = colsModel[col].component
+    const component = cols[col].component
     if (component && typeof component === 'function') {
       return component(item)
     }
@@ -46,24 +68,26 @@ export const Table = () => {
       <table>
         <thead>
           <tr>
-            {Object.keys(colsModel).map((col, i) => (
+            {Object.keys(cols).map((col, i) => (
               <th key={i}>
-                {colsModel[col].sort ? (
+                {cols[col].sort ? (
                   <SortLink className='sort-link' sort={col} onClick={onSort}>
-                    {colsModel[col].title}
-                    <span className='sort-icon'>&nbsp;&#8597;</span>
+                    {cols[col].title}
+                    {sortCol === col && (
+                      <span className='sort-icon'>&nbsp;{sortDir > 0 ? '↑' : '↓'}</span>
+                    )}
                   </SortLink>
                 ) : (
-                  <span>{colsModel[col].title}</span>
+                  <span>{cols[col].title}</span>
                 )}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {users.sortBy(colsModel, sort).map(user => (
+          {users.sortBy(cols, sortCol, sortDir).map(user => (
             <tr key={user._id}>
-              {Object.keys(colsModel).map((col, i) => (
+              {Object.keys(cols).map((col, i) => (
                 <td key={i}>{renderColumn(user, col)}</td>
               ))}
             </tr>

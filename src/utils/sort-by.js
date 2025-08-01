@@ -8,11 +8,12 @@
  *
  * @param {Object} model - объект, содержащий информацию о столбцах элементов и сортировке
  * @param {string} sortCol - название столбца, по которому нужно отсортировать массив
+ * @param {number} [dir=1] - направление сортировки: 1 для возрастания, -1 для убывания
  *
  * @returns {Array} Sorted array based on the specified column
  */
-export function sortBy(model, sortCol) {
-  if (!sortCol || !this.length) return this
+export function sortBy(model, sortCol, dir = 1) {
+  if (!sortCol || !this.length || dir === 0) return this
 
   const sortEl = el => {
     const sortFieldCallback = model[sortCol]?.sort
@@ -26,8 +27,8 @@ export function sortBy(model, sortCol) {
   return this.sort((a, b) => {
     const sortA = sortEl(a)
     const sortB = sortEl(b)
-    if (sortA < sortB) return -1
-    if (sortA > sortB) return 1
+    if (sortA < sortB) return -dir
+    if (sortA > sortB) return dir
     return 0
   })
 }
